@@ -1,0 +1,51 @@
+
+
+from __future__ import print_function
+import random
+wiadomosc = 30
+#krok piuerwszy - losowanie liczbyh b
+p = next_prime(30*wiadomosc) #liczba pirewsza p -> krok1
+F = GF(p)
+E = F.random_element()
+#print(E)
+tablica = []
+tablicax = []
+tablicaf = []
+#k - osob uprawnionych
+k = 5
+n = 10
+#wielomian
+P = PolynomialRing(F, 'x')
+#generacja dowolnego wielomianu stopnia k-1 i wrzucanie wspolczynnikow do tablicy -> krok 2
+
+print("WARTOSCI LOSOWYCH WSPOLCZYNNIKOW A1, A2 itd")
+for i in range(0, k-1):
+    el = F.random_element()
+    tablica.append(el)
+    print(i, tablica[i])
+#tablica.append(wiadomosc)
+print("Wzor wielomianu") 
+f = int(tablica[0])*(x^(k-1)) + int(tablica[1])*(x^(k-2)) + int(tablica[2])*(x^(k-3)) + int(tablica[3])*(x^(k-4))  + wiadomosc
+
+#Krok 3 -> wyznaczenie cieni poprzez wyznaczenie wartosci w n losowych punktach
+print("Wartosc x, wartosc wielmianu w x")
+for i in range(0, n-1):
+    los = F.random_element()
+    tablicax.append(los)
+    tablicaf.append(mod(f(int(los)), p))
+    print(tablicax[i], tablicaf[i])
+
+#krok 4 -> wyslanie do odpowiednich xi, odpowiadajace li oraz p
+#krok 5 -> Tworzenie podzbioru, rozwiazanie ukladu kongruencji
+lista = []
+m = zero_matrix(n-1, k+1)
+for i in range(n-1):
+    lista = []
+    for j in range(k):
+        lista.append(tablicax[i]^j)
+        if j==k-1:
+            lista.append(tablicaf[i])
+    m[i, :] = vector(lista)
+show(m)
+
+show(m.mod(p).rref())
